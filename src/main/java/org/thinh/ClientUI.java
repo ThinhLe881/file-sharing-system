@@ -1,6 +1,7 @@
 package org.thinh;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,8 +17,11 @@ import javafx.util.Callback;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientUI extends Application {
+
+    AtomicBoolean shutdownRequested = new AtomicBoolean();
 
     private final Image iconFolder = new Image("/images/icon-folder.png");
     private final Image iconFile = new Image("/images/icon-file.png");
@@ -60,6 +64,11 @@ public class ClientUI extends Application {
                 root.getChildren().add(item);
             }
         }
+    }
+
+    @Override
+    public void stop() {
+        shutdownRequested.set(true);
     }
 
     @Override
@@ -151,6 +160,35 @@ public class ClientUI extends Application {
         primaryStage.getIcons().add(new Image("/images/icon.png"));
         primaryStage.setScene(new Scene(grid,500,500));
         primaryStage.setTitle("File Sharer");
+
+        Thread update = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Runnable updater = new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (this) {
+                            try {
+                                FileSharerClient clientTemp = new FileSharerClient(serverAddress);
+                                refreshLocal(root, rootFolder);
+                                refreshServer(serverRoot, clientTemp.dir());
+                            } catch (IOException e) {
+                                System.err.println("Can not update server folder");
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                };
+                while (!shutdownRequested.get()) {
+                    Platform.runLater(updater);
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {}
+                }
+            }
+        });
+        update.start();
+
         primaryStage.show();
 
         final File[] uploadFile = new File[1];
@@ -164,6 +202,10 @@ public class ClientUI extends Application {
                         -> downloadFile[0] = newValue.getValue());
 
         uploadBtn.setOnAction(event -> {
+            // Pause the background thread to prevent JavaFX elements being changed simultaneously
+            try {
+                update.sleep(500);
+            } catch (InterruptedException ex) {}
             try {
                 FileSharerClient clientTemp;
                 if (uploadFile[0].isDirectory()) {
@@ -175,6 +217,7 @@ public class ClientUI extends Application {
                 refreshLocal(root, rootFolder);
                 clientTemp = new FileSharerClient(serverAddress);
                 refreshServer(serverRoot, clientTemp.dir());
+                update.interrupt();
             } catch (IOException e) {
                 System.err.println("Error uploading file");
                 e.printStackTrace();
@@ -182,12 +225,17 @@ public class ClientUI extends Application {
         });
 
         downloadBtn.setOnAction(event -> {
+            // Pause the background thread to prevent JavaFX elements being changed simultaneously
+            try {
+                update.sleep(500);
+            } catch (InterruptedException ex) {}
             try {
                 FileSharerClient clientTemp = new FileSharerClient(serverAddress);
                 clientTemp.download(downloadFile[0], rootFolder.getPath());
                 refreshLocal(root, rootFolder);
                 clientTemp = new FileSharerClient(serverAddress);
                 refreshServer(serverRoot, clientTemp.dir());
+                update.interrupt();
             } catch (IOException e) {
                 System.err.println("Error downloading file");
                 e.printStackTrace();
@@ -195,10 +243,15 @@ public class ClientUI extends Application {
         });
 
         refreshBtn.setOnAction(event -> {
+            // Pause the background thread to prevent JavaFX elements being changed simultaneously
+            try {
+                update.sleep(500);
+            } catch (InterruptedException ex) {}
             try {
                 FileSharerClient clientTemp = new FileSharerClient(serverAddress);
                 refreshLocal(root, rootFolder);
                 refreshServer(serverRoot, clientTemp.dir());
+                update.interrupt();
             } catch (IOException e) {
                 System.err.println("Can not update server folder");
                 e.printStackTrace();
