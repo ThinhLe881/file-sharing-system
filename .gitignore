@@ -1,0 +1,6 @@
+*.class
+*.bin
+out/
+test-server/
+test-client/
+.vscode/
