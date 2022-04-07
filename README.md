@@ -17,13 +17,13 @@ The file sharing clients will connect to a central server, which will respond to
 
 **Server:**
 
--   The server doesn't have any UI, but it is multi-threaded, each incoming client connection is handled with a separate thread. This thread, and its corresponding socket, will remain open only until the command has been handled.
--   The server can handle same filename file, able to transfer various types of file (tested: .txt, .pdf, .docx, .mp3, .mp4,...), able to navigate to sub-directories in local folder.
+-   The server doesn't have any UI, but it is multithreaded, each incoming client connection is handled with a separate thread. This thread and its corresponding socket, will remain open only until the command has been handled.
+-   The server can handle same filename file, able to transfer various types of file (tested: .txt, .pdf, .docx, .mp3, .mp4,...), able to navigate to subdirectories in local folder.
 
 **Client:**
 
 -   The client will have a user interface. When the client is started, the client will be asked for the local folder. The client will then show a split screen showing two directories (local and shared). On the left will be the list of all files in the local folder of the local client. On the right will be the list of files in the shared folder of the server.
--   The user interface: icon for the application and for each files and folders in the directory, local host name, "Refresh" button for user to refresh the state of both directories at will.
+-   The user interface: icon for the application and for each file and folders in the directory, local host name, "Refresh" button for user to refresh the state of both directories at will. Otherwise, the UI will automatically refresh after "Upload" or "Download", or every 10 seconds.
 
 ![ui](ui.PNG)
 

@@ -42,17 +42,7 @@ public class ClientUI extends Application {
 
     public void refreshLocal(TreeItem<File> root, File folder) {
         root.getChildren().clear();
-        File[] content = folder.listFiles();
-        TreeItem<File> item;
-        for (File file : content) {
-            if (file.isFile()) {
-                item = new TreeItem<>(file);
-            } else {
-                item = new TreeItem<>(file);
-                display(item, file);
-            }
-            root.getChildren().add(item);
-        }
+        display(root, folder);
     }
 
     public void refreshServer(TreeItem<String> root, String dir) {
@@ -182,7 +172,7 @@ public class ClientUI extends Application {
                 while (!shutdownRequested.get()) {
                     Platform.runLater(updater);
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(10000);
                     } catch (InterruptedException e) {}
                 }
             }
