@@ -33,9 +33,18 @@ The file sharing clients will connect to a central server, which will respond to
 2. Install Gradle, recommend v6.8.3, [instruction](https://gradle.org/install/)
 3. Clone this repository into your local machine, [instruction](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 4. Go into this repository in your local machine, run the program with following command in command line:
-    - Run server: gradle start --args="<your server directory's path>" (make sure the directory's name has **no space**)
+    - Run server:
       When the server is running, it will display the server IP address.
-    - Run client: gradle run --args="<the server's IP address>"
+
+```
+gradle start --args="<your server directory's path>" (make sure the directory's name has **no space**)
+```
+
+    - Run client:
       Then it will display the directory chooser for the user to choose their local directory (make sure the directory's name has **no space**)
+
+```
+gradle run --args="<the server's IP address>"
+```
 
 ## Other Resources:
