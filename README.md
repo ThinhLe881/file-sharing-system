@@ -35,13 +35,16 @@ The file sharing clients will connect to a central server, which will respond to
 4. Go into this repository in your local machine, run the program with following command in command line:
     - Run server:
       When the server is running, it will display the server IP address.
+    - Run client:
+      Then it will display the directory chooser for the user to choose their local directory (make sure the directory's name has **no space**)
+
+**Run server**
 
 ```
 gradle start --args="<your server directory's path>" (make sure the directory's name has **no space**)
 ```
 
-    - Run client:
-      Then it will display the directory chooser for the user to choose their local directory (make sure the directory's name has **no space**)
+**Run client**
 
 ```
 gradle run --args="<the server's IP address>"
