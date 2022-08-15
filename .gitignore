@@ -1,7 +1,4 @@
 *.class
 *.bin
 out/
-test-server/
-test-client-1/
-test-client-2/
 .vscode/
