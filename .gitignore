@@ -2,5 +2,6 @@
 *.bin
 out/
 test-server/
-test-client/
+test-client-1/
+test-client-2/
 .vscode/
