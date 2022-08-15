@@ -29,7 +29,6 @@ public class FileSharerServer {
             threads = new FileSharerThread[MAX_CLIENTS];
             while (true) {
                 clientSocket = serverSocket.accept();
-                System.out.println("Connection established");
                 threads[numClients] = new FileSharerThread(clientSocket, serverRoot);
                 threads[numClients].start();
                 numClients++;
